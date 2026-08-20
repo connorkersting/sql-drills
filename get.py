@@ -17,8 +17,8 @@ from pathlib import Path
 GRAPHQL_URL = "https://leetcode.com/graphql"
 PROBLEM_URL = "https://leetcode.com/problems/{slug}/"
 QUERY = (
-    'query { question(titleSlug: "%s") { questionId title titleSlug '
-    "content difficulty topicTags { name } } }"
+    'query { question(titleSlug: "%s") { questionId questionFrontendId title '
+    "titleSlug content difficulty topicTags { name } } }"
 )
 # LeetCode's edge returns 403 for urllib's default agent. This is a plain browser
 # User-Agent and nothing else: no cookies, no tokens, no session of any kind.
@@ -27,7 +27,9 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
 }
 REQUIRED_FIELDS = (
-    "questionId",
+    # questionFrontendId is the number shown on the site; questionId is internal
+    # and differs for most problems. Always record the one you can search for.
+    "questionFrontendId",
     "title",
     "titleSlug",
     "content",
@@ -40,7 +42,9 @@ PROBLEMS_DIR = REPO_ROOT / "problems"
 
 PRE_RE = re.compile(r"<pre>(.*?)</pre>", re.S | re.I)
 TABLE_DECL_RE = re.compile(r"Table:\s*<code>([A-Za-z_][A-Za-z0-9_]*)</code>", re.I)
-SAMPLE_HDR_RE = re.compile(r"^([A-Za-z_][A-Za-z0-9_]*)\s+table:\s*$", re.I)
+# Sample blocks label their table either "Visits table:" or bare "Visits", so the
+# suffix is optional. A bare word is only accepted when a pipe table follows it.
+SAMPLE_HDR_RE = re.compile(r"^([A-Za-z_][A-Za-z0-9_]*)(?:\s+table)?\s*:?$", re.I)
 NUMBERED_RE = re.compile(r"^(\d{3})-")
 NUMERIC_TYPES = ("INTEGER", "BIGINT", "SMALLINT", "DOUBLE", "DECIMAL")
 
@@ -211,7 +215,15 @@ def parse_samples(content: str) -> dict[str, tuple[list[str], list[list[str]]]]:
             hdr = SAMPLE_HDR_RE.match(line.strip())
             if hdr is None:
                 continue
-            parsed = parse_pipe_table(lines[i + 1 :])
+            following = i + 1
+            while following < len(lines) and not lines[following].strip():
+                following += 1
+            if following >= len(lines):
+                continue
+            # guard against matching stray prose: a real label is followed by a table
+            if not lines[following].lstrip().startswith(("+", "|")):
+                continue
+            parsed = parse_pipe_table(lines[following:])
             if parsed is not None:
                 found[hdr.group(1)] = parsed
         if found:
@@ -287,7 +299,7 @@ def build_problem_file(question: dict[str, object]) -> str:
     prompt = html_to_text(str(question["content"]))
     commented = "\n".join(("-- " + line).rstrip() for line in prompt.split("\n"))
     return (
-        f"-- source: leetcode {question['questionId']} "
+        f"-- source: leetcode {question['questionFrontendId']} "
         f"{PROBLEM_URL.format(slug=slug)}\n"
         f"-- problem: {question['title']} ({question['difficulty']}) [{tags}]\n"
         "-- pattern:\n"
@@ -310,7 +322,8 @@ def build_setup_file(
     inferred: list[str] = []
     warnings: list[str] = []
     parts: list[str] = [
-        f"-- Sample data for {question['title']} (leetcode {question['questionId']})",
+        f"-- Sample data for {question['title']} "
+        f"(leetcode {question['questionFrontendId']})",
         "-- Generated from the problem statement by get.ps1. Sample rows only,",
         "-- not the judge's full test data. A query that passes here can still fail.",
         "",

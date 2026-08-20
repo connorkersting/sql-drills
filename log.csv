@@ -1,5 +1,5 @@
 date,wk,source,problem,pattern,attempt_minutes,solved_unaided,notes
-2026-08-18,WK01,leetcode-sql-50,1908 recyclable-and-low-fat-products,filter with AND,3,n,"right shape first try but submitted recyclable = 'N'; careless read of the condition"
+2026-08-18,WK01,leetcode-sql-50,1757 recyclable-and-low-fat-products,filter with AND,3,n,"right shape first try but submitted recyclable = 'N'; careless read of the condition"
 2026-08-18,WK01,leetcode-sql-50,584 find-customer-referee,NULL comparison,14,n,"3 hints; filtered id instead of referee_id twice; then guessed != NULL and = NULL four times; looked up IS NULL"
 2026-08-18,WK01,leetcode-sql-50,595 big-countries,OR filter,4,y,clean first submit
 2026-08-18,WK01,leetcode-sql-50,1148 article-views-i,output shape: distinct + alias + sort,18,n,"3 hints; SELECT * then wrong columns; used GROUP BY to sort; ORDER BY 'id' quoted as a string; looked up DISTINCT and AS"

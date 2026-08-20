@@ -1,4 +1,4 @@
--- source: leetcode 1908 https://leetcode.com/problems/recyclable-and-low-fat-products/
+-- source: leetcode 1757 https://leetcode.com/problems/recyclable-and-low-fat-products/
 -- problem: Recyclable and Low Fat Products (Easy) [Database]
 -- pattern:
 -- date: 2026-08-18

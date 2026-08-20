@@ -1,4 +1,4 @@
--- Sample data for Recyclable and Low Fat Products (leetcode 1908)
+-- Sample data for Recyclable and Low Fat Products (leetcode 1757)
 -- Generated from the problem statement by get.ps1. Sample rows only,
 -- not the judge's full test data. A query that passes here can still fail.
 
