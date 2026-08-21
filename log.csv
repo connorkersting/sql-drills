@@ -4,3 +4,5 @@ date,wk,source,problem,pattern,attempt_minutes,solved_unaided,notes
 2026-08-18,WK01,leetcode-sql-50,595 big-countries,OR filter,4,y,clean first submit
 2026-08-18,WK01,leetcode-sql-50,1148 article-views-i,output shape: distinct + alias + sort,18,n,"3 hints; SELECT * then wrong columns; used GROUP BY to sort; ORDER BY 'id' quoted as a string; looked up DISTINCT and AS"
 2026-08-18,WK01,leetcode-sql-50,1683 invalid-tweets,scalar string function,7,n,"2 hints; guessed content CHAR and content VARCHAR instead of looking up the function; looked up CHAR_LENGTH"
+2026-08-20,WK01,leetcode-sql-50,1378 replace-employee-id-with-the-unique-identifier,left join,10,n,"3 attempts, zero hints; looked up LEFT JOIN grammar only, not the answer; both errors were column choice, not join mechanics; on the comprehension check thought join type changes columns rather than rows"
+2026-08-20,WK01,leetcode-sql-50,1068 product-sales-analysis-i,join direction,6,n,"2 attempts, zero hints; first attempt was a deliberate diagnostic run; fixed by swapping which table is in FROM, not by changing join type"
