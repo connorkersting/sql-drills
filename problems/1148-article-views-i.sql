@@ -1,0 +1,4 @@
+-- source: leetcode 1148 https://leetcode.com/problems/article-views-i/
+-- problem id: 1148
+-- date logged: 2026-08-18
+-- NOT RECOVERED - re-solve unaided before this counts as executed.

@@ -1,0 +1,4 @@
+-- source: leetcode 595 https://leetcode.com/problems/big-countries/
+-- problem id: 595
+-- date logged: 2026-08-18
+-- NOT RECOVERED - re-solve unaided before this counts as executed.
