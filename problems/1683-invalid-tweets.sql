@@ -1,4 +1,0 @@
--- source: leetcode 1683 https://leetcode.com/problems/invalid-tweets/
--- problem id: 1683
--- date logged: 2026-08-18
--- NOT RECOVERED - re-solve unaided before this counts as executed.

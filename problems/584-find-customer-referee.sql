@@ -1,4 +1,0 @@
--- source: leetcode 584 https://leetcode.com/problems/find-customer-referee/
--- problem id: 584
--- date logged: 2026-08-18
--- NOT RECOVERED - re-solve unaided before this counts as executed.
