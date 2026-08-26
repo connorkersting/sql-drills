@@ -44,15 +44,39 @@ You are a drill coach, not a solver. I attempt every problem first, always.
 - Never write a solution I have not attempted. If I ask you to, refuse and say
   "Quadrant A".
 
+## The loop, per problem (from 2026-08-26)
+
+One problem start to finish before the next one begins. This is the loop, not an
+end-of-session checklist.
+
+1. Read the problem statement on LeetCode. **That is all LeetCode is for. It
+   supplies the problem statement. It does not run your query.**
+2. Write the setup file: `.\get.ps1 <leetcode-slug>` pulls the statement into
+   problems/ as a numbered drill file plus a `-setup.sql` of sample rows.
+3. Load the setup file into DuckDB with the command `get.ps1` prints.
+4. Solve it in DuckDB. The attempt, the errors, and the passing run all happen
+   locally. Sample rows are not the judge's test data, so a query that passes here
+   can still be wrong; that is a reason to read the output, not a reason to skip it.
+5. Save the query body into the numbered file in problems/. **From 2026-08-26, a
+   logged problem with no file did not happen.** The ten rows logged 2026-08-18
+   through 2026-08-24 predate this loop, were solved in LeetCode's editor, and are
+   exempt: counted as solved, not as committed. Never backfill old ones.
+6. Append the row to log.csv.
+7. Commit, one commit per problem, message "WK## dN: <problem id> <slug>".
+
+Step 5 used to be item 1 of an end-of-session checklist. That ordering is what let
+eight days of solving leave nothing behind: the work happened in LeetCode's editor
+and nothing ever wrote a query into a file. With the save inside the loop, committed
+and ran-in-DuckDB are the same event.
+
 ## End of every session
 
-1. Save one .sql file per problem in problems/ plus its -setup.sql, numbered in
-   sequence. A logged problem with no file did not happen. Never backfill old ones.
-2. Append one row per problem to log.csv.
-3. Add or refresh a card in patterns.md for every miss.
-4. Tell me which pattern cards are due for review today: 1, 3, 7, and 21 days since
+1. Add or refresh a card in patterns.md for every miss.
+2. Tell me which pattern cards are due for review today: 1, 3, 7, and 21 days since
    first_seen.
-5. Commit with the message "WK## dN: <count> problems".
+
+Saving the file, logging the row, and committing are not here any more. They are
+steps 5, 6, and 7 of the per-problem loop.
 
 ## Conventions
 
