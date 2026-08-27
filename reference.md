@@ -196,3 +196,31 @@ Run this list first. Most of your logged errors are on it.
 7. Does the required output column name match the spec exactly?
 8. Re-read the condition in the question word for word. 1757 was lost to reading
    `low_fats = 'Y'` as `'N'`.
+
+---
+
+## 10. DuckDB-only sugar — do not use it
+
+All four are confirmed working in DuckDB 1.5.5 and none exist in MySQL. They are
+the only real way this setup could teach you a bad habit, so treat them as
+off-limits and write the portable form instead.
+
+| DuckDB-only | Write this instead |
+|---|---|
+| `GROUP BY ALL` | list the grouping columns explicitly |
+| `SELECT * EXCLUDE (col)` | name the columns you want |
+| `QUALIFY <window predicate>` | wrap in a CTE and filter in the outer `WHERE` |
+| alias in `WHERE` | repeat the expression, or wrap in a CTE |
+
+Two more that work in DuckDB but are not portable to MySQL:
+
+- `x::DOUBLE` — use `CAST(x AS DOUBLE)`, which is valid everywhere.
+- `'a' || 'b'` — valid in DuckDB, Postgres, and Snowflake, but in MySQL `||`
+  means OR by default. Use `CONCAT(a, b)`, which is valid in both.
+
+`LENGTH` and `CHAR_LENGTH` both return characters in DuckDB. In MySQL `LENGTH`
+returns **bytes** and `CHAR_LENGTH` returns characters. Prefer `CHAR_LENGTH`.
+
+Everything else in sections 2 through 7 is ANSI SQL and behaves the same in
+MySQL, Postgres, Redshift, Snowflake, and BigQuery. The portable-by-default rule
+costs nothing here and means the LeetCode submit stops being a coin flip.
