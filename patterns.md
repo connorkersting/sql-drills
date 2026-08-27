@@ -15,13 +15,18 @@ it gets rewritten inside the Sunday 3:00-3:30 deck slot, rewrite before retrieva
 and capped at 10 minutes, into the smallest testable unit with a concrete failing
 example from log.csv, rather than going back into the rotation.
 
+A suspended card is out of the rotation until its rewrite lands. It is not due, it
+does not lapse while suspended, and it re-enters at the 1-day rung on the day it is
+rewritten. Suspension is normally the leech rule firing at 3+ lapses; it can also be
+called early by decision, which is recorded in the row.
+
 Mechanics ratified 2026-08-26 (Command Center). first_seen and lapses below were
 reconstructed from git history, because the previous mechanics overwrote first_seen
 on every miss and kept no lapse count.
 
 | pattern | the tell in the question | skeleton query | first_seen | lapses | last_review | next_review |
 | --- | --- | --- | --- | --- | --- | --- |
-| NULL is not comparable | "not referred by any", "never ordered", "has no manager" — anything where the absence of a value should count as a match | `SELECT c FROM t WHERE c <> v OR c IS NULL` — the second branch is the whole point, a comparison alone silently drops NULL rows | 2026-08-18 | 2 | 2026-08-26 | 2026-08-27 |
+| NULL is not comparable | "not referred by any", "never ordered", "has no manager" — anything where the absence of a value should count as a match | `SELECT c FROM t WHERE c <> v OR c IS NULL` — the second branch is the whole point, a comparison alone silently drops NULL rows | 2026-08-18 | 2 | 2026-08-26 | suspended, rewrite Sun 2026-08-30 |
 | Output shape is part of the spec | the example output shows a column name that does not exist in the source schema, or says "sorted by" / "each ... once" | `SELECT DISTINCT src AS out FROM t WHERE p ORDER BY out` — sorting by the alias works because ORDER BY runs after SELECT | 2026-08-18 | 1 | 2026-08-26 | 2026-08-27 |
 | Length of a string is a function call | "number of characters", "longer than N", "content exceeds" — a size test on a text column | `SELECT id FROM t WHERE CHAR_LENGTH(c) > n`. MySQL and Redshift: CHAR_LENGTH is characters, LENGTH is bytes in MySQL. LEN is SQL Server only and errors on LeetCode | 2026-08-18 | 1 | 2026-08-26 | 2026-08-29 |
 | Logical clause order | any query where an alias, an aggregate filter, or a GROUP BY is involved — and any time I reach for GROUP BY to sort or dedupe | FROM then WHERE then GROUP BY then HAVING then SELECT then DISTINCT then ORDER BY then LIMIT. Alias unusable in WHERE, usable in ORDER BY. Aggregate filters go in HAVING, not WHERE | 2026-08-19 | 1 | 2026-08-26 | 2026-08-27 |
