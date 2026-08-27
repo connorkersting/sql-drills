@@ -114,9 +114,10 @@ Consequences that matter:
   reaching for `GROUP BY` to sort or dedupe is a recurring error of yours.
 - To dedupe, `DISTINCT`. To sort, `ORDER BY`.
 
-**Dialect trap:** DuckDB permits a SELECT alias in `WHERE` and `GROUP BY`. MySQL
-does not. A query DuckDB accepts can therefore fail the LeetCode submit — that
-is exactly the case the rules say becomes a pattern card.
+**Dialect trap, verified 2026-08-27:** DuckDB accepts a SELECT alias in both
+`WHERE` and `GROUP BY`. MySQL accepts it in `GROUP BY`, `HAVING`, and `ORDER BY`,
+but **not** in `WHERE`. So `WHERE` is the one that can pass DuckDB and fail the
+LeetCode submit — exactly the case the rules say becomes a pattern card.
 
 ---
 
