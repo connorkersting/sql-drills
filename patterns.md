@@ -4,10 +4,16 @@ One card per pattern I have missed, written at the moment of the error, never ba
 at the end of a session. A multi-error problem produces one card per distinct error.
 
 Ladder: 1, 3, 7, 21 days, anchored to last_review. A miss puts the card back on the
-1-day rung and increments lapses. first_seen is set once and never rewritten, and
-lapses is never reset. A card at 3+ lapses is a leech: it gets rewritten Sunday
-3:00-3:30 into the smallest testable unit with a concrete failing example from
-log.csv, rather than going back into the rotation.
+1-day rung and increments lapses. A pass advances one rung and sets next_review to
+last_review plus the new rung; a pass on the 21-day rung retires the card, and a
+fresh error on a retired pattern brings it back at the 1-day rung.
+
+lapses counts REVIEW misses only. The error that creates a card is lapse 0, so a
+card can sit at 0 lapses and still have come from a real mistake. first_seen is set
+once and never rewritten, and lapses is never reset. A card at 3+ lapses is a leech:
+it gets rewritten inside the Sunday 3:00-3:30 deck slot, rewrite before retrieval
+and capped at 10 minutes, into the smallest testable unit with a concrete failing
+example from log.csv, rather than going back into the rotation.
 
 Mechanics ratified 2026-08-26 (Command Center). first_seen and lapses below were
 reconstructed from git history, because the previous mechanics overwrote first_seen

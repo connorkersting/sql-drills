@@ -9,7 +9,14 @@
   actuals computed from this repo. It is not a second source of truth. Where this
   file and `CALENDAR.md` disagree, `CALENDAR.md` is right and this file is stale.
 - **Refresh date: 2026-08-25.** Targets below are a snapshot taken on that date.
-- **Actuals sources, corrected 2026-08-25.** Solved is counted from `log.csv`.
+- **Actuals sources, corrected 2026-08-25; counting rule amended 2026-08-26.**
+  Solved is counted from `log.csv` as the rows whose `state` is `solved` or
+  `shown`, never as a bare row count. Rows with `state` of `queued` (the next
+  problem, written at the end of the prior session) or `attempted-not-run` (the
+  environment timebox fired) are excluded: neither is a worked problem, and
+  counting rows would have inflated the bar by one from the first queued row on.
+  A `shown` row is worked and accepted with a re-derivation still owed; it counts,
+  and it flips to `solved` when the re-derivation is done.
   Committed is counted by finding files in `problems/` with a non-comment body.
   These are two different measurements, and the earlier claim that actuals came
   from "`log.csv` and `problems/*.sql`" hid that: reading `problems/*.sql` only
@@ -30,9 +37,13 @@ Set by the 2026-08-25 ruling in `STATUS.md` Decisions. The former **Executed** a
   Through 2026-08-25 this is zero: no file in `problems/` has ever carried a query.
   This bar measures local execution, raw error reading, environment work against a
   zero infrastructure baseline, and the artifact. None of that happened.
-- From **2026-08-26** the loop is solve in DuckDB, save the file, commit, with
-  LeetCode supplying the problem statement only. The save moves inside the solve,
-  so committed and ran-in-DuckDB become the same event and the two bars converge.
+- From **2026-08-26** the loop is solve in DuckDB, submit once on LeetCode as a
+  confirming second oracle, save the file, log, commit. DuckDB is the bar; the
+  submit is a check, never a retry loop. The save moves inside the solve, so
+  committed and ran-in-DuckDB become the same event and the two bars converge.
+  Superseded on the LeetCode clause only: the 2026-08-25 wording said LeetCode
+  supplies the problem statement only, and the 2026-08-26 Command Center ruling
+  made submit the second oracle.
 
 ## Phase 1 scope
 
