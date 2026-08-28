@@ -25,8 +25,26 @@ SELECT * FROM Weather;               # look at the actual rows before writing an
 .quit
 ```
 
-`get.ps1` prints a Python one-liner instead. Both work; the CLI above is better
-while solving because you stay in the session.
+`get.ps1` prints a Python one-liner instead. Use the CLI. The two loaders are not
+interchangeable, because DuckDB takes an **exclusive lock** on `drill.duckdb`:
+only one process may hold the file open. With a CLI session running, the Python
+one-liner fails with `IO Error: ... being used by another process` and names the
+PID holding it. Load with `.read` from inside the session you already have open.
+
+Two prompts, two languages. Confusing them costs minutes:
+
+| prompt | what it takes |
+|---|---|
+| `D` | SQL statements and dot-commands (`.read`, `.quit`, `.mode`) |
+| `PS C:\...>` | PowerShell (`cd`, `duckdb`, `py get.py <slug>`) |
+
+`.\get.ps1 <slug>` at a `D` prompt gives `Unrecognized command`. It is a shell
+script, not a DuckDB command.
+
+If `.\get.ps1` is blocked with `running scripts is disabled on this system`, that
+is the PowerShell execution policy. Either skip the wrapper — `py get.py <slug>`
+is what it calls anyway — or fix it once with
+`Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned`.
 
 Statements need a trailing `;`. Without one the CLI waits for more input and
 looks frozen — it isn't, finish the statement or hit Ctrl-C.
@@ -218,6 +236,7 @@ off-limits and write the portable form instead.
 | `SELECT * EXCLUDE (col)` | name the columns you want |
 | `QUALIFY <window predicate>` | wrap in a CTE and filter in the outer `WHERE` |
 | alias in `WHERE` | repeat the expression, or wrap in a CTE |
+| trailing comma before `FROM` | drop it — DuckDB allows `a, b, FROM t`, MySQL rejects it |
 
 Two more that work in DuckDB but are not portable to MySQL:
 
