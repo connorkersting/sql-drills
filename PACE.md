@@ -59,7 +59,7 @@ Set by the 2026-08-25 ruling in `STATUS.md` Decisions. The former **Executed** a
 | Week | Dates | Scheduled | Cum. target | **Solved** | **Cum. solved** | **Committed** |
 |---|---|---:|---:|---:|---:|---:|
 | WK01 | 2026-08-17 .. 2026-08-23 | 8 | 8 | 7 | 7 | 0 |
-| WK02 | 2026-08-24 .. 2026-08-30 | 18 | 26 | 3 | 10 | 0 |
+| WK02 | 2026-08-24 .. 2026-08-30 | 18 | 26 | 4 | 11 | 1 |
 | WK03 | 2026-08-31 .. 2026-09-06 | 6 | 32 | - | - | - |
 | WK04 | 2026-09-07 .. 2026-09-13 | 18 | 50 | - | - | - |
 | WK05 | 2026-09-14 .. 2026-09-20 | 18 | 68 | - | - | - |
@@ -69,17 +69,17 @@ Set by the 2026-08-25 ruling in `STATUS.md` Decisions. The former **Executed** a
 | WK09 | 2026-10-12 .. 2026-10-18 | 12 | 102 | - | - | - |
 | WK10 | 2026-10-19 .. 2026-10-25 | 8 | 110 | - | - | - |
 | WK11 | 2026-10-26 .. 2026-11-01 | 6 | 116 | - | - | - |
-| **Total** | | **116** | | **10** | | **0** |
+| **Total** | | **116** | | **11** | | **1** |
 
 Weeks after the refresh date show `-` rather than `0`; they are unstarted, not missed.
 
-## Position as of 2026-08-25 (WK02 day 2, Tuesday)
+## Position as of 2026-08-27 (WK02 day 4, Thursday)
 
-- **Solved: 10** of 15 scheduled phase-to-date. **Variance -5.**
-- **Committed: 0** of 15.
-- On-plan cumulative for today, per `CALENDAR.md`: **15** (WK01 8 scheduled, plus
-  WK02 Mon 3, plus WK02 Tue 4; the per-day targets are in `CALENDAR.md` section 7).
-- WK02 week-to-date: 3 solved of 18 scheduled, 0 committed. Tue Aug 25 at zero.
+- **Solved: 11** of 22 scheduled phase-to-date. **Variance -11.**
+- **Committed: 1** of 22.
+- On-plan cumulative for today, per `CALENDAR.md`: **22** (WK01 8 scheduled, plus
+  WK02 Mon 3, Tue 4, Wed 3, Thu 4; the per-day targets are in `CALENDAR.md` section 7).
+- WK02 week-to-date: 4 solved of 18 scheduled, 1 committed. Tue Aug 25 and Wed Aug 26 at zero.
 
 The on-plan baseline is built on WK01 **scheduled** 8, not WK01 actual 7, because
 `CALENDAR.md` owns the target and a target is never restated to match what happened.
