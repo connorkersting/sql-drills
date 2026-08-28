@@ -281,6 +281,13 @@ row: `true` or `false`. A boolean is **not** a number.
 - `COUNT(DISTINCT x < 3)` can only ever return 1 or 2, for any data of any size.
 - A bare comparison is a per-row value, so it cannot survive `GROUP BY` any more
   than a bare column can.
+- `SUM(x < 3)` **does** work, in DuckDB and MySQL only: both add a boolean as 1
+  for true and 0 for false, which is the engine writing the `CASE` for you.
+  Postgres, SQL Server, and Snowflake reject it with a type error. Portable form
+  is `SUM(CASE WHEN x < 3 THEN 1 ELSE 0 END)`. LeetCode is MySQL, so the short
+  form passes there; write the portable one anywhere the engine is unknown.
+- `COUNT(col)` as a denominator silently shrinks if `col` has NULLs. A percentage
+  of all rows wants `COUNT(*)`.
 
 ### CASE
 
