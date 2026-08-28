@@ -1,9 +1,9 @@
 -- source: leetcode 197 https://leetcode.com/problems/rising-temperature/
 -- problem: Rising Temperature (Easy) [Database]
--- pattern:
+-- pattern: self-join on consecutive dates (row-to-row comparison within one table)
 -- date: 2026-08-24
--- minutes taken:
--- solved unaided (y/n):
+-- minutes taken: 35 first attempt 2026-08-24 (shown), 14 re-derivation 2026-08-27
+-- solved unaided (y/n): n -- worked example granted, and a 4-of-5-line frame given
 
 -- Table: Weather
 --
@@ -47,4 +47,12 @@
 -- In 2015-01-02, the temperature was higher than the previous day (10 -> 25).
 -- In 2015-01-04, the temperature was higher than the previous day (20 -> 30).
 
+SELECT a.id
+FROM Weather AS a
+INNER JOIN Weather AS b
+    ON b.recordDate = a.recordDate - INTERVAL 1 DAY
+WHERE a.temperature > b.temperature;
 
+-- DuckDB accepted `a.recordDate - 1`; LeetCode Submit rejected it. MySQL coerces
+-- the date to the integer YYYYMMDD, so 2015-01-01 - 1 is 20150100, not a date.
+-- INTERVAL 1 DAY is correct in both engines. See patterns.md and reference.md section 8.

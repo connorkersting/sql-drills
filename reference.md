@@ -178,6 +178,13 @@ Every column in SELECT must be either inside an aggregate or named in `GROUP BY`
 | shift | `d + INTERVAL 1 DAY` | `DATE_ADD(d, INTERVAL 1 DAY)` |
 | shift back | `d - INTERVAL 1 DAY` | `DATE_SUB(d, INTERVAL 1 DAY)` |
 
+`d - 1` is a trap. DuckDB reads it as date arithmetic and gives you the previous
+day. MySQL coerces the date to the integer `YYYYMMDD` and subtracts one, so
+`2015-01-01 - 1` becomes `20150100`, which is not a date. It survives any test
+whose dates sit mid-month and breaks the moment one crosses a month or year
+boundary — LeetCode's Run passes and its Submit fails. Write
+`d - INTERVAL 1 DAY`; it is correct in both engines.
+
 Dates are not strings. Comparing a `DATE` column to `'2015-01-01'` works because
 the literal gets cast; comparing it to a formatted string generally does not.
 
