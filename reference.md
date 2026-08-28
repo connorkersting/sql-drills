@@ -6,11 +6,22 @@ read an error. Look things up here instead of guessing — guessing at syntax
 teaches nothing, and it has cost real attempt-minutes (`!= NULL` four times on
 584, `content CHAR` on 1683).
 
-**This file deliberately stops short.** It does not cover conditional aggregation,
-the WHERE-vs-HAVING choice, CTEs vs subqueries, or the two-alias self-join. Those
-are unattempted patterns with worked examples pending; writing them here would
-hand over the rep. Pattern skeletons live in `patterns.md` and are not duplicated
-here — one source of truth.
+**Syntax is not a pattern, and this file carries all the syntax.** Policy amended
+2026-08-27 after the 1211 session, where `CASE WHEN` was absent from this file
+because conditional aggregation was an unattempted *pattern* — and roughly 50
+minutes went into trying to invent, from nothing, a keyword that was never
+introduced. The old policy contradicted `CLAUDE.md`, which hands over "function
+names, operators, syntax" free at any time. The line is:
+
+- **Syntax** — that a keyword exists, what it is called, how it is punctuated,
+  what it evaluates to. Free. It lives here, including for patterns not yet
+  attempted. Section 11 is the full Block 1 inventory.
+- **Pattern** — which construct to reach for, what to group by, how the pieces
+  assemble into an answer. Withheld. That is the rep, and the skeletons live in
+  `patterns.md` — one source of truth, not duplicated here.
+
+Knowing `CASE WHEN` exists does not solve a conditional aggregation problem. It
+lets you start one.
 
 ---
 
@@ -250,3 +261,100 @@ returns **bytes** and `CHAR_LENGTH` returns characters. Prefer `CHAR_LENGTH`.
 Everything else in sections 2 through 7 is ANSI SQL and behaves the same in
 MySQL, Postgres, Redshift, Snowflake, and BigQuery. The portable-by-default rule
 costs nothing here and means the LeetCode submit stops being a coin flip.
+
+---
+
+## 11. Block 1 syntax inventory
+
+Every keyword and operator you will meet in the rest of Block 1. Grammar only:
+what it is called, how it is punctuated, what it evaluates to. Nothing here says
+which one to reach for.
+
+### Booleans
+
+A comparison — `rating < 3`, `a = b`, `x IS NULL` — evaluates to a BOOLEAN per
+row: `true` or `false`. A boolean is **not** a number.
+
+- You cannot divide by it. DuckDB: `No function matches ... '/(BOOLEAN, BIGINT)'`.
+- `COUNT(x < 3)` counts **every** row. `COUNT` counts non-NULL values, and
+  `false` is a perfectly good non-NULL value.
+- `COUNT(DISTINCT x < 3)` can only ever return 1 or 2, for any data of any size.
+- A bare comparison is a per-row value, so it cannot survive `GROUP BY` any more
+  than a bare column can.
+
+### CASE
+
+```sql
+CASE WHEN <condition> THEN <value>
+     WHEN <condition> THEN <value>
+     ELSE <value>
+END
+```
+
+- Evaluates to **one value per row**. It goes anywhere a value goes: a `SELECT`
+  list, inside a function, inside an aggregate, in `ORDER BY`.
+- `END` is required. Forgetting it is a parser error at the next keyword.
+- `ELSE` is optional; without it, non-matching rows evaluate to NULL.
+- Simple form, for equality against one expression:
+  `CASE <expr> WHEN <val> THEN <value> ELSE <value> END`.
+- Portable to MySQL, Postgres, Redshift, Snowflake, BigQuery.
+
+### HAVING
+
+```sql
+GROUP BY col
+HAVING <condition>
+```
+
+- Takes a **condition**, not a value — it needs a comparison operator in it. Same
+  rule as `WHERE` and `ON`. `HAVING COUNT(x)` alone is not a condition.
+- Runs after `GROUP BY`, so aggregates are available to it. `WHERE` runs before,
+  so they are not. See section 4.
+
+### CTEs
+
+```sql
+WITH daily_orders AS (
+    SELECT ...
+),
+flagged_orders AS (
+    SELECT ... FROM daily_orders
+)
+SELECT ...
+FROM flagged_orders
+```
+
+- `WITH` once, at the top. Comma between CTEs. **No comma** before the final
+  `SELECT`.
+- Each CTE is named and referred to afterwards exactly like a table.
+- MySQL 8.0+, DuckDB, Postgres. Not MySQL 5.7.
+
+### Subqueries
+
+| form | grammar |
+|---|---|
+| scalar | `WHERE x = (SELECT MAX(y) FROM t)` |
+| list | `WHERE x IN (SELECT y FROM t)` |
+| existence | `WHERE EXISTS (SELECT 1 FROM t WHERE t.k = o.k)` |
+| derived table | `FROM (SELECT ...) AS alias` |
+
+The alias on a derived table is **required** in MySQL. DuckDB will let you omit
+it, which is a submit-time failure waiting to happen.
+
+### Filtering operators
+
+| | |
+|---|---|
+| `IN (a, b, c)` / `NOT IN (...)` | membership in a list |
+| `BETWEEN a AND b` | inclusive on **both** ends |
+| `LIKE 'A%'` | `%` matches any run of characters, `_` matches exactly one |
+| `IS NULL` / `IS NOT NULL` | the only NULL tests; see section 2 |
+| `AND`, `OR`, `NOT` | parenthesise when mixing `AND` and `OR` |
+
+`NOT IN` against a list containing NULL returns **no rows at all**. That is the
+NULL trap in section 2 wearing a different hat.
+
+### Self-join aliasing
+
+Grammar is in section 5: the alias attaches to the table in `FROM` and `JOIN`,
+never to a column in `SELECT`, and one table may appear twice under two aliases.
